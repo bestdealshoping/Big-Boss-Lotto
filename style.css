@@ -1,0 +1,57 @@
+:root {
+    --primary: #E50914;
+    --dark: #121212;
+    --gray: #1f1f1f;
+    --text: #ffffff;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background-color: var(--dark);
+    color: var(--text);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.page { display: none; width: 100%; max-width: 500px; padding: 20px; }
+.page.active { display: block; }
+
+.auth-card {
+    text-align: center;
+    margin-top: 100px;
+    background: var(--gray);
+    padding: 30px;
+    border-radius: 15px;
+    border-top: 5px solid var(--primary);
+}
+
+input, select {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    background: #333;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    background: var(--primary);
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.menu-tabs { display: flex; gap: 10px; margin: 20px 0; }
+.menu-tabs button { background: #333; }
+
+.type-btn.active { background: var(--primary); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
