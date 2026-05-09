@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lis Fich - Big Boss Lotto</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; }
+        .nav { background: #1d3557; padding: 10px; display: flex; justify-content: space-around; }
+        .nav a { color: white; text-decoration: none; font-size: 14px; font-weight: bold; }
+        .container { padding: 15px; }
+        .fich-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-left: 5px solid #e63946; }
+        .fich-header { display: flex; justify-content: space-between; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; }
+        .anile-btn { background: #ff4d4d; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; float: right; }
+        .status-anile { color: red; font-weight: bold; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+<div class="nav">
+    <a href="vante.html">VANT</a>
+    <a href="lis_vante.html">LIS FICH</a>
+    <a href="rapo.html">RAPÒ</a>
+    <a href="rekiperasyon.html">REKIPERASYON</a>
+</div>
+
+<div class="container">
+    <h3>Dènye Fich yo</h3>
+    <div id="lisFich">Chaje done...</div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+    import { getDatabase, ref, get, query, orderByChild, equalTo, update } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCtFPW384zZ7JPQnl7hZG3nzA6Z8mdy-2U",
+        authDomain: "big-boss-lotto.firebaseapp.com",
+        projectId: "big-boss-lotto",
+        storageBucket: "big-boss-lotto.firebasestorage.app",
+        messagingSenderId: "942815480492",
+        appId: "1:942815480492:web:3c56db0495adcb53d22d09"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const idVande = localStorage.getItem("vendeur_id");
+
+    async function chajeFich() {
+        const lavantRef = ref(db, 'lavant');
+        const q = query(lavantRef, orderByChild("vendeur"), equalTo(idVande));
+
+        try {
+            const snapshot = await get(q);
+            const div = document.getElementById('lisFich');
+            div.innerHTML = "";
+
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                // Triye pa dat (pi resan an anlè)
+                const sortedKeys = Object.keys(data).reverse();
+
+                sortedKeys.forEach(key => {
+                    const fich = data[key];
+                    const isAnile = fich.status === "anile";
+                    
+                    div.innerHTML += `
+                        <div class="fich-card" style="${isAnile ? 'opacity: 0.6; border-left-color: gray;' : ''}">
+                            <div class="fich-header">
+                                <span>Fich #${fich.fichID}</span>
+                                <span>${fich.total} HTG</span>
+                            </div>
+                            <p style="margin:5px 0;">Tiraj: ${fich.tiraj} | ${new Date(fich.dat).toLocaleTimeString()}</p>
+                            ${isAnile ? 
+                                '<span class="status-anile">ANILE</span>' : 
+                                `<button class="anile-btn" onclick="anileFich('${key}')">Anile Fich</button>`
+                            }
+                            <div style="clear:both;"></div>
+                        </div>`;
+                });
+            } else {
+                div.innerHTML = "<p>Pa gen fich ki vann pou kounye a.</p>";
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    window.anileFich = async (key) => {
+        if(confirm("Èske ou sèten ou vle anile fich sa a? L ap disparèt nan rapò a.")) {
+            try {
+                await update(ref(db, `lavant/${key}`), { status: "anile", total: 0 });
+                alert("Fich la anile ak siksè!");
+                chajeFich();
+            } catch (e) { alert("Erè: " + e.message); }
+        }
+    };
+
+    chajeFich();
+</script>
+</body>
+</html>

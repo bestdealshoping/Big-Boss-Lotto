@@ -1,62 +1,56 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="ht">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Big Boss Lotto | System</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Login - Big Boss Lotto</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #1d3557; color: white; }
+        .login-box { background: white; padding: 30px; border-radius: 10px; color: #333; width: 300px; text-align: center; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #e63946; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    </style>
 </head>
 <body>
+    <div class="login-box">
+        <h2>Big Boss Lotto</h2>
+        <input type="text" id="userID" placeholder="Idantifyan">
+        <input type="password" id="userCode" placeholder="Kòd Sekrè">
+        <button onclick="konekte()">Konekte</button>
+    </div>
 
-    <section id="login-page" class="page active">
-        <div class="auth-card">
-            <h1>BIG BOSS LOTTO</h1>
-            <p>Antre idantifyan ou pou konekte</p>
-            <form id="login-form">
-                <input type="text" id="login-id" placeholder="ID Machin (ex: BB-102)" required>
-                <input type="password" id="secret-code" placeholder="Kòd Sekrè" required>
-                <button type="submit">KONEKTE</button>
-            </form>
-        </div>
-    </section>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
 
-    <section id="vendeur-page" class="page">
-        <nav>
-            <span id="user-display">Vendeur: --</span>
-            <button onclick="logout()">Soti</button>
-        </nav>
-        
-        <div class="menu-tabs">
-            <button onclick="showTab('vente')">Vante</button>
-            <button onclick="showTab('rapport')">Rapò</button>
-        </div>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCtFPW384zZ7JPQnl7hZG3nzA6Z8mdy-2U",
+            authDomain: "big-boss-lotto.firebaseapp.com",
+            projectId: "big-boss-lotto",
+            storageBucket: "big-boss-lotto.firebasestorage.app",
+            messagingSenderId: "942815480492",
+            appId: "1:942815480492:web:3c56db0495adcb53d22d09"
+        };
 
-        <div id="tab-vente" class="tab-content active">
-            <div class="sale-container">
-                <select id="lotto-state">
-                    <option value="Florida">Floride</option>
-                    <option value="New York">New York</option>
-                    <option value="Georgia">Géorgie</option>
-                </select>
-                <div class="lotto-types">
-                    <button class="type-btn active" data-type="3">Lotto 3</button>
-                    <button class="type-btn" data-type="4">Lotto 4</button>
-                    <button class="type-btn" data-type="5">Lotto 5</button>
-                    <button class="type-btn" data-type="mariage">Mariage</button>
-                </div>
-                <input type="text" id="lotto-numbers" placeholder="Nimewo yo">
-                <input type="number" id="lotto-amount" placeholder="Montant HTG">
-                <button id="btn-valider" onclick="processSale()">VALIDER BILLET</button>
-                <div id="ticket-preview"></div>
-            </div>
-        </div>
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-        <div id="tab-rapport" class="tab-content">
-            <h3>Vant Jodi a</h3>
-            <div id="sales-list"></div>
-        </div>
-    </section>
+        window.konekte = async () => {
+            const id = document.getElementById('userID').value;
+            const code = document.getElementById('userCode').value;
+            const dbRef = ref(db);
 
-    <script type="module" src="app.js"></script>
+            try {
+                const snapshot = await get(child(dbRef, `vendeurs/${id}`));
+                if (snapshot.exists() && snapshot.val().password === code) {
+                    localStorage.setItem("vendeur_id", id);
+                    localStorage.setItem("vendeur_nom", snapshot.val().nom);
+                    window.location.href = "vante.html";
+                } else {
+                    alert("ID oswa Kòd sekrè a pa bon!");
+                }
+            } catch (e) { alert("Erè koneksyon"); }
+        };
+    </script>
 </body>
 </html>

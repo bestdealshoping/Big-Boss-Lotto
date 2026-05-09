@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <title>Jesyon Vandè - Admin</title>
+    <style>
+        /* Sèvi ak menm style Dashboard la */
+        .form-add { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        input { padding: 10px; margin-right: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 10px 20px; background: #2a9d8f; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        table { width: 100%; background: white; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background: #1d3557; color: white; }
+    </style>
+</head>
+<body>
+<div style="margin-left:270px; padding:20px;">
+    <h1>Jesyon Kliyan (Vandè)</h1>
+    
+    <div class="form-add">
+        <h3>Ajoute yon nouvo Vandè</h3>
+        <input type="text" id="nom" placeholder="Non Vandè">
+        <input type="text" id="id" placeholder="Idantifyan (ID)">
+        <input type="text" id="pass" placeholder="Kòd Sekrè">
+        <button onclick="ajouteVande()">Anrejistre</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Non</th>
+                <th>Idantifyan</th>
+                <th>Kòd Sekrè</th>
+                <th>Aksyon</th>
+            </tr>
+        </thead>
+        <tbody id="lisVande"></tbody>
+    </table>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+    import { getDatabase, ref, set, get, remove } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+
+    const firebaseConfig = { /* Konfigirasyon Firebase */ };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.ajouteVande = async () => {
+        const nom = document.getElementById('nom').value;
+        const id = document.getElementById('id').value;
+        const pass = document.getElementById('pass').value;
+
+        if(!nom || !id || !pass) return alert("Ranpli tout fòm nan!");
+
+        await set(ref(db, 'vendeurs/' + id), { nom, password: pass });
+        alert("Vandè ajoute!");
+        location.reload();
+    };
+
+    async function chajeLis() {
+        const snap = await get(ref(db, 'vendeurs'));
+        const tab = document.getElementById('lisVande');
+        if(snap.exists()) {
+            Object.entries(snap.val()).forEach(([id, info]) => {
+                tab.innerHTML += `
+                    <tr>
+                        <td>${info.nom}</td>
+                        <td>${id}</td>
+                        <td>${info.password}</td>
+                        <td><button style="background:red" onclick="siprime('${id}')">Siprime</button></td>
+                    </tr>`;
+            });
+        }
+    }
+    
+    window.siprime = async (id) => {
+        if(confirm("Siprime vandè sa a?")) {
+            await remove(ref(db, 'vendeurs/' + id));
+            location.reload();
+        }
+    };
+
+    chajeLis();
+</script>
+</body>
+</html>
