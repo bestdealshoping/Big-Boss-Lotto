@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Big Boss Lotto Admin</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<style>
+
+body{
+
+margin:0;
+padding:0;
+
+font-family:Arial;
+
+background:#0d1117;
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+height:100vh;
+
+color:white;
+}
+
+.login-box{
+
+width:320px;
+
+background:#161b22;
+
+padding:40px;
+
+border-radius:20px;
+
+box-shadow:0 0 25px rgba(0,0,0,0.5);
+
+text-align:center;
+}
+
+h1{
+
+margin-bottom:10px;
+}
+
+p{
+
+color:#8b949e;
+
+margin-bottom:20px;
+}
+
+input{
+
+width:100%;
+
+padding:14px;
+
+margin-bottom:15px;
+
+border:none;
+
+border-radius:10px;
+
+background:#21262d;
+
+color:white;
+
+font-size:15px;
+
+box-sizing:border-box;
+}
+
+button{
+
+width:100%;
+
+padding:14px;
+
+border:none;
+
+border-radius:10px;
+
+background:#00c853;
+
+color:white;
+
+font-size:16px;
+
+cursor:pointer;
+}
+
+button:hover{
+
+background:#00e676;
+}
+
+#errorMsg{
+
+margin-top:15px;
+
+color:red;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="login-box">
+
+<h1>
+
+BIG BOSS LOTTO
+
+</h1>
+
+<p>
+
+Administration sécurisée
+
+</p>
+
+<input
+type="email"
+id="email"
+placeholder="Adresse email">
+
+<input
+type="password"
+id="password"
+placeholder="Mot de passe">
+
+<button onclick="loginAdmin()">
+
+Connexion
+
+</button>
+
+<p id="errorMsg"></p>
+
+</div>
+
+<script>
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyCtFPW384zZ7JPQnl7hZG3nzA6Z8mdy-2U",
+
+authDomain: "big-boss-lotto.firebaseapp.com",
+
+projectId: "big-boss-lotto",
+
+storageBucket:
+"big-boss-lotto.firebasestorage.app",
+
+messagingSenderId: "942815480492",
+
+appId:
+"1:942815480492:web:3c56db0495adcb53d22d09",
+
+measurementId: "G-Y3H1CB3TFE"
+
+};
+
+firebase.initializeApp(firebaseConfig);
+
+async function loginAdmin(){
+
+const email =
+document.getElementById("email").value;
+
+const password =
+document.getElementById("password").value;
+
+try{
+
+await firebase.auth()
+
+.signInWithEmailAndPassword(
+
+email,
+password
+
+);
+
+window.location.href =
+"dashboard.html";
+
+}
+
+catch(error){
+
+document.getElementById("errorMsg")
+.innerHTML =
+
+"Email ou mot de passe incorrect";
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
